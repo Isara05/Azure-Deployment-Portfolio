@@ -1,0 +1,185 @@
+﻿@model List<IsaraTaskManagerWeb.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "Task Manager";
+}
+
+<div class="container mt-5">
+
+    <div class="text-center mb-4">
+        <h1>Isara Task Manager</h1>
+
+        <p class="text-muted">
+            Manage your daily tasks efficiently
+        </p>
+
+        <p>
+            <strong>Environment:</strong>
+            <span class="badge bg-primary">
+                @ViewBag.Environment
+            </span>
+        </p>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h4 class="mb-3">Add New Task</h4>
+
+            <form asp-controller="Tasks"
+                  asp-action="Add"
+                  method="post">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Task Name</label>
+
+                        <input type="text"
+                               name="taskName"
+                               class="form-control"
+                               placeholder="Enter your task"
+                               required />
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Priority</label>
+
+                        <select name="priority"
+                                class="form-select"
+                                required>
+
+                            <option value="">Select Priority</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end mb-3">
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            Add Task
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h4 class="mb-3">My Tasks</h4>
+
+            @if (Model.Count == 0)
+            {
+                <div class="alert alert-info">
+                    No tasks added yet. Add your first task above.
+                </div>
+            }
+            else
+            {
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var task in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @task.TaskName
+                                </td>
+
+                                <td>
+                                    @task.Priority
+                                </td>
+
+                                <td>
+
+                                    @if (task.IsCompleted)
+                                    {
+                                        <span class="badge bg-success">
+                                            Completed
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    @if (!task.IsCompleted)
+                                    {
+                                        <form asp-controller="Tasks"
+                                              asp-action="Complete"
+                                              method="post"
+                                              class="d-inline">
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@task.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-success btn-sm">
+                                                Complete
+                                            </button>
+
+                                        </form>
+                                    }
+
+
+                                    <form asp-controller="Tasks"
+                                          asp-action="Delete"
+                                          method="post"
+                                          class="d-inline">
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@task.Id" />
+
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm">
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            }
+
+        </div>
+
+    </div>
+
+</div>
